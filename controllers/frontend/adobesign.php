@@ -37,70 +37,70 @@
         exportPDF($order);
     }
     function checkSign(){
-        $widgetRow = db_get_row('select * from cscart_order_contracts where order_id='.$_REQUEST['order_id']);
-        $widgetId = $widgetRow['widgetId'];
-        $target_server = 'https://api.au1.adobesign.com/api/rest/v6/widgets/'.$widgetId.'/formData';
-        $ch = curl_init();
-        $headers = array(
-            'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
-            'Accept:application/json',
-        );
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        // Set the URL of the server you want to fetch data from
-        curl_setopt($ch, CURLOPT_URL, $target_server);
-        // Set the cURL option to return the response as a string
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $widgetRow = db_get_row('select * from cscart_order_contracts where order_id='.$_REQUEST['order_id']);
+        // $widgetId = $widgetRow['widgetId'];
+        // $target_server = 'https://api.au1.adobesign.com/api/rest/v6/widgets/'.$widgetId.'/formData';
+        // $ch = curl_init();
+        // $headers = array(
+        //     'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
+        //     'Accept:application/json',
+        // );
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        // // Set the URL of the server you want to fetch data from
+        // curl_setopt($ch, CURLOPT_URL, $target_server);
+        // // Set the cURL option to return the response as a string
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
-        // Execute the cURL request
-        $response = curl_exec($ch);
-        curl_close($ch);
-        $result = json_decode($response);
-        if($result->formDataList){
-            $formDataList = $result->formDataList;
-            // $agreementId = $formDataList->agreementId;
-            $completed = $formDataList->completed;
-            $order_id = $_REQUEST['order_id'];
-            if($completed != ''){
-                // $target_server = "https://api.au1.adobesign.com/api/rest/v6/agreements/".$agreementId."/documents";
-                // $ch = curl_init();
-                // $headers = array(
-                //     'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
-                //     'Content-Type:application/json',
-                // );
-                // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                // // Set the URL of the server you want to fetch data from
-                // curl_setopt($ch, CURLOPT_URL, $target_server);
-                // // Set the cURL option to return the response as a string
-                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // // Execute the cURL request
+        // $response = curl_exec($ch);
+        // curl_close($ch);
+        // $result = json_decode($response);
+        // if($result->formDataList){
+        //     $formDataList = $result->formDataList;
+        //     // $agreementId = $formDataList->agreementId;
+        //     $completed = $formDataList->completed;
+        //     $order_id = $_REQUEST['order_id'];
+        //     if($completed != ''){
+        //         // $target_server = "https://api.au1.adobesign.com/api/rest/v6/agreements/".$agreementId."/documents";
+        //         // $ch = curl_init();
+        //         // $headers = array(
+        //         //     'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
+        //         //     'Content-Type:application/json',
+        //         // );
+        //         // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        //         // // Set the URL of the server you want to fetch data from
+        //         // curl_setopt($ch, CURLOPT_URL, $target_server);
+        //         // // Set the cURL option to return the response as a string
+        //         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 
-                // // Execute the cURL request
-                // $response = curl_exec($ch);
-                // curl_close($ch);
-                // $result = json_decode($response);
-                // $documents = $result->documents;
-                // $documentID = $documents[0]->id;
-                // $target_server = "https://api.au1.adobesign.com/api/rest/v6/agreements/".$agreementId."/documents/".$documentID;
-                // $ch = curl_init();
-                // $headers = array(
-                //     'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
-                //     'Content-Type:application/json',
-                // );
-                // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                // // Set the URL of the server you want to fetch data from
-                // curl_setopt($ch, CURLOPT_URL, $target_server);
-                // // Set the cURL option to return the response as a string
-                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                // // Execute the cURL request
-                // $response = curl_exec($ch);
-                // curl_close($ch);
-                // $filename = '/signed.pdf';
-                // file_put_contents($filename, $response);
-                $connection = Tygh::$app['db'];
-                $connection->query("UPDATE `cscart_order_contracts` SET state = 'signed', date_time = '".$completed."' where order_id=".$order_id);
-                echo "success";
-                exit;
-            }
-        }
+        //         // // Execute the cURL request
+        //         // $response = curl_exec($ch);
+        //         // curl_close($ch);
+        //         // $result = json_decode($response);
+        //         // $documents = $result->documents;
+        //         // $documentID = $documents[0]->id;
+        //         // $target_server = "https://api.au1.adobesign.com/api/rest/v6/agreements/".$agreementId."/documents/".$documentID;
+        //         // $ch = curl_init();
+        //         // $headers = array(
+        //         //     'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
+        //         //     'Content-Type:application/json',
+        //         // );
+        //         // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        //         // // Set the URL of the server you want to fetch data from
+        //         // curl_setopt($ch, CURLOPT_URL, $target_server);
+        //         // // Set the cURL option to return the response as a string
+        //         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //         // // Execute the cURL request
+        //         // $response = curl_exec($ch);
+        //         // curl_close($ch);
+        //         // $filename = '/signed.pdf';
+        //         // file_put_contents($filename, $response);
+        //         $connection = Tygh::$app['db'];
+        //         $connection->query("UPDATE `cscart_order_contracts` SET state = 'signed', date_time = '".$completed."' where order_id=".$order_id);
+        //         echo "success";
+        //         exit;
+        //     }
+        // }
         echo "failed";
         exit;
     }
@@ -187,143 +187,8 @@
         // ---------------------------------------------------------
         // Close and output PDF document
         // This method has several options, check the source code documentation for more information.
-        // $pdf->Output('order_contract.pdf', 'I');
         $indexDir = dirname(__FILE__);
         $output_file = $indexDir.'/order_contract.pdf';
-        // Output the PDF to a file
-        $widgetRow = db_get_row('select * from cscart_order_contracts where order_id='.$_REQUEST['order_id']);
-        if($widgetRow){
-            $widgetId = $widgetRow['widgetId'];
-            $target_server = 'https://api.au1.adobesign.com/api/rest/v6/widgets/'.$widgetId.'/formData';
-            $ch = curl_init();
-            $headers = array(
-                'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
-                'Accept:application/json',
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            // Set the URL of the server you want to fetch data from
-            curl_setopt($ch, CURLOPT_URL, $target_server);
-            // Set the cURL option to return the response as a string
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            // Execute the cURL request
-            $response = curl_exec($ch);
-            curl_close($ch);
-            $result = json_decode($response);
-            if($result->formDataList){
-                $completed = $result->formDataList->completed;
-                if($completed != ''){
-                    $pdf->Output('order_contract.pdf', 'I');
-                    exit;
-                }
-            }
-        }
-        $pdf->Output($output_file, 'F');
-        $target_server = "https://api.au1.adobesign.com/api/rest/v6/transientDocuments";
-
-        if (file_exists($output_file)) {
-            // Prepare the file data for upload
-            $file_data = array(
-                'File' => new CURLFile($output_file, 'application/pdf', 'order_contract.pdf'),
-                'File-Name' => 'order_contract.pdf'
-            );
-            // Initialize cURL
-            $ch = curl_init();
-
-            // Set cURL options
-            curl_setopt($ch, CURLOPT_URL, $target_server);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $file_data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            // Set the content-type in the request header
-            $headers = array(
-                'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
-                'x-api-user:email:sam@fight-club.com.au',
-                'Content-Type:multipart/form-data',
-                'Accept:application/json'
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            // Execute the cURL request
-            $response = curl_exec($ch);
-
-            //----------------------------------------------------------------
-
-            // var_dump(json_decode($response));exit;
-            $result = json_decode($response);
-            $transientDocumentId = $result->transientDocumentId;
-            curl_close($ch);
-            $json_data = '{
-            "fileInfos": [
-                {
-                "transientDocumentId": "'.$transientDocumentId.'"
-                }
-                ],
-            "name": "Adobe Sign",
-                "widgetParticipantSetInfo": {
-                    "memberInfos": [{
-                        "email": ""
-                    }],
-                "role": "SIGNER"
-                },
-                "state": "ACTIVE"
-            }';
-            $target_server = "https://api.au1.adobesign.com/api/rest/v6/widgets";
-            $ch = curl_init();
-        // Set cURL options
-            curl_setopt($ch, CURLOPT_URL, $target_server);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            // Set the content-type in the request header
-            $headers = array(
-                'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
-                'x-api-user:email:sam@fight-club.com.au',
-                'Content-Type:application/json',
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            // Execute the cURL request
-            $response = curl_exec($ch);
-            $result = json_decode($response);
-            curl_close($ch);
-            // Close the cURL session
-            //----------------------------------------------------------------
-            $ch = curl_init();
-            $target_server = "https://api.au1.adobesign.com/api/rest/v6/widgets";
-            $headers = array(
-                'Authorization:Bearer 3AAABLblqZhCg9mzG-PNtjwRdqG6fK6YECiei7N8hrGdjiJif1BPZVhZHKpUPUyMXWuYWmp0e3v2Wudc2doWiXCr_X8w4LzmS',
-                'Accept:application/json',
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            // Set the URL of the server you want to fetch data from
-            curl_setopt($ch, CURLOPT_URL, $target_server);
-            // Set the cURL option to return the response as a string
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            curl_close($ch);
-            // Execute the cURL request
-            $response = curl_exec($ch);
-            $result = json_decode($response);
-            $widgetList = $result->userWidgetList;
-            $script = $widgetList[0]->javascript;
-            $widgetId = $widgetList[0]->id;
-            $connection = Tygh::$app['db'];
-            $connection->query("delete from `cscart_order_contracts` where order_id=".$_REQUEST['order_id']);
-            $connection->query("INSERT INTO `cscart_order_contracts` (
-                `order_id`,
-                `widgetId`,
-                `state`
-                )
-                VALUES
-                (
-                    '".$_REQUEST['order_id']."',
-                    '".$widgetId."',
-                    'sign'
-                );
-            ");
-            echo $script; exit;
-        } else {
-            echo "PDF file not found in the local server.";
-        }
+        $pdf->Output($output_file, 'D');
     }
 
